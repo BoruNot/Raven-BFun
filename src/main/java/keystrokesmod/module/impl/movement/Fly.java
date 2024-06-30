@@ -6,6 +6,10 @@ import keystrokesmod.module.setting.impl.SliderSetting;
 import keystrokesmod.utility.RenderUtils;
 import keystrokesmod.utility.Utils;
 import keystrokesmod.event.*;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Vec3;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.commons.lang3.RandomUtils;
@@ -19,7 +23,8 @@ public class Fly extends Module {
     private ButtonSetting stopMotion;
     private boolean d;
     private boolean a = false;
-    private String[] modes = new String[]{"Vanilla", "Fast", "Fast 2", "MushGlide"};
+    private double startY;
+    private String[] modes = new String[]{"Vanilla", "Fast", "MushBlock", "MushGlide"};
 
     public Fly() {
         super("Fly", category.movement);
@@ -32,6 +37,7 @@ public class Fly extends Module {
 
     public void onEnable() {
         this.d = mc.thePlayer.capabilities.isFlying;
+        startY = Minecraft.getMinecraft().thePlayer.posY;
     }
 
     public void onUpdate() {
@@ -62,15 +68,21 @@ public class Fly extends Module {
                 setSpeed(0.85 * horizontalSpeed.getInput());
                 break;
             case 2:
-                double nextDouble = RandomUtils.nextDouble(1.0E-7, 1.2E-7);
-                if (mc.thePlayer.ticksExisted % 2 == 0) {
-                    nextDouble = -nextDouble;
+                if (mc.thePlayer.onGround) {
+                    placeBlockUnderPlayer();
+                    mc.thePlayer.jump();
+                } else if (mc.thePlayer.posY >= startY) {
+                    placeBlockUnderPlayer();
                 }
-                if (!mc.thePlayer.onGround) {
-                    mc.thePlayer.setPosition(mc.thePlayer.posX, mc.thePlayer.posY + nextDouble, mc.thePlayer.posZ);
-                }
-                mc.thePlayer.motionY = 0.0;
-                setSpeed(0.4 * horizontalSpeed.getInput());
+        }
+    }
+
+    private void placeBlockUnderPlayer() {
+        Minecraft mc = Minecraft.getMinecraft();
+        BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY - 1, mc.thePlayer.posZ);
+
+        if (mc.theWorld.getBlockState(blockPos).getBlock().isReplaceable(mc.theWorld, blockPos)) {
+            mc.playerController.onPlayerRightClick(mc.thePlayer, mc.theWorld, null, blockPos, EnumFacing.UP, new Vec3(blockPos.getX(), blockPos.getY(), blockPos.getZ()));
         }
     }
 	
