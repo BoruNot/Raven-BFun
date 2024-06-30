@@ -47,6 +47,7 @@ public class ModuleManager {
     public static Trajectories trajectories;
     public static NoFall noFall;
     public static PlayerESP playerESP;
+    public static Speed speed;
     public static Module reduce;
     public static SafeWalk safeWalk;
     public static Module keepSprint;
@@ -67,6 +68,7 @@ public class ModuleManager {
         this.addModule(new Backtrack());
         this.addModule(new PlayerCircle());
         this.addModule(new AimAssist());
+        this.addModule(new Speed());
         this.addModule(new Derp());
         this.addModule(new Blink());
         this.addModule(new BurstClicker());

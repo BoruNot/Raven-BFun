@@ -24,7 +24,7 @@ public class BHop extends Module {
     private ButtonSetting stopMotion;
     private ButtonSetting damageBoost;
     private SliderSetting boostMultiplier;
-    private String[] modes = new String[]{"Strafe", "Ground", "MushMC", "Verus & NCP"};
+    private String[] modes = new String[]{"Strafe", "Ground", "MushMC", "Verus & NCP", "MushMCYPort"};
     public boolean hopping;
 
     public BHop() {
@@ -117,6 +117,20 @@ public class BHop extends Module {
                         Utils.setSpeed(currentSpeed);
                         hopping = true;
                     }
+                break;
+            case 4:
+                double csp = Utils.getHorizontalSpeed();
+                if (csp != 0.0D) {
+                    if (mc.thePlayer.onGround && !mc.thePlayer.capabilities.isFlying) {
+                            if (mc.thePlayer.hurtTime != mc.thePlayer.maxHurtTime || mc.thePlayer.maxHurtTime <= 0) {
+                                if (!Utils.jumpDown()) {
+                                    double val = 2.1 - (2.1 - 1.0D) * 0.5D;
+                                    Utils.ss(csp * val, true);
+                                }
+                            }
+
+                    }
+                }
                 break;
         }
     }
