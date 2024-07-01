@@ -46,7 +46,7 @@ public class AutoRegister extends Module {
         if(characters.getInput() == 10.0){
             String paswor = "pwpwpwpwpw";
         }
-        
+
         sendChatMessage("/register " + paswor + " " + paswor);
         this.disable();
 

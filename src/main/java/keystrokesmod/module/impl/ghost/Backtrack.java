@@ -16,6 +16,7 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import scala.Int;
 
 import java.awt.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -30,6 +31,11 @@ public class Backtrack extends Module {
     public Backtrack() {
         super("Backtrack", category.ghost, 0);
         this.registerSetting(delay = new SliderSetting("Delay MS", 50.0D, 1.0D, 1000.0D, 1.0D));
+    }
+
+
+    public String getInfo() {
+        return String.valueOf((int) delay.getInput()) + "ms";
     }
 
     @Override

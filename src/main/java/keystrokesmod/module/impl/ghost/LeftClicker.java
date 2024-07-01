@@ -35,6 +35,11 @@ public class LeftClicker extends Module {
         this.nextClickTime = System.currentTimeMillis() + getRandomDelay();
     }
 
+    public String getInfo() {
+        return String.valueOf((int) minCPS.getInput()) + "cps" + " - " + String.valueOf((int) maxCPS.getInput()) + "cps";
+
+    }
+
     public void guiUpdate() {
         Utils.correctValue(minCPS, maxCPS);
     }

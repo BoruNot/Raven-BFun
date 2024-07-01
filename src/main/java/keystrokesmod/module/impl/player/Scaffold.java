@@ -72,6 +72,10 @@ public class Scaffold extends Module {
         this.registerSetting(tower = new ButtonSetting("Tower", false));
     }
 
+    public String getInfo() {
+        return fastScaffold.getInfo();
+    }
+
     public void onDisable() {
         placeBlock = null;
         if (lastSlot != -1) {
@@ -115,8 +119,24 @@ public class Scaffold extends Module {
         }
         switch ((int) fastScaffold.getInput()){
             case 4:
-                mc.thePlayer.setSprinting(true);
-                mc.thePlayer.motionY *= 0.1;
+                if (Keyboard.isKeyDown(mc.gameSettings.keyBindJump.getKeyCode())) {
+
+                }
+                else{
+                    double csp = Utils.getHorizontalSpeed();
+                    if (csp != 0.0D) {
+                        if (mc.thePlayer.onGround && !mc.thePlayer.capabilities.isFlying) {
+                            if (mc.thePlayer.hurtTime != mc.thePlayer.maxHurtTime || mc.thePlayer.maxHurtTime <= 0) {
+                                if (!Utils.jumpDown()) {
+                                    double val = 1.7 - (1.7 - 1.0D) * 0.5D;
+                                    Utils.ss(csp * val, true);
+                                }
+                            }
+
+                        }
+                    }
+                }
+
                 break;
         }
     }
@@ -342,7 +362,9 @@ public class Scaffold extends Module {
                 case 2:
                     return Utils.onEdge();
                 case 3:
+                    return true;
                 case 4:
+                    return true;
 
             }
         }

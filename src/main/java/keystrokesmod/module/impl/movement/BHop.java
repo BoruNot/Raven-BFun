@@ -124,7 +124,7 @@ public class BHop extends Module {
                     if (mc.thePlayer.onGround && !mc.thePlayer.capabilities.isFlying) {
                             if (mc.thePlayer.hurtTime != mc.thePlayer.maxHurtTime || mc.thePlayer.maxHurtTime <= 0) {
                                 if (!Utils.jumpDown()) {
-                                    double val = 2.1 - (2.1 - 1.0D) * 0.5D;
+                                    double val = 1.9 - (1.9 - 1.0D) * 0.5D;
                                     Utils.ss(csp * val, true);
                                 }
                             }
