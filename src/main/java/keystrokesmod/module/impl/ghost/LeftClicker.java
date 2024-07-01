@@ -43,7 +43,7 @@ public class LeftClicker extends Module {
         long min = (long) (1000 / minCPS.getInput());
         long max = (long) (1000 / maxCPS.getInput());
         long delay = max > min ? ThreadLocalRandom.current().nextLong(min, max) : min;
-        delay += ThreadLocalRandom.current().nextLong(-min / 3, min / 3); // Pequenas variações aleatórias
+        delay += ThreadLocalRandom.current().nextLong(-min / 3, min / 3);
         return delay;
     }
 
@@ -83,8 +83,8 @@ public class LeftClicker extends Module {
                 KeyBinding.onTick(mc.gameSettings.keyBindAttack.getKeyCode());
                 lastClickTime = System.currentTimeMillis();
 
-                if (ThreadLocalRandom.current().nextInt(10) < 2) { // 20% de chance de uma micro pausa
-                    nextClickTime += ThreadLocalRandom.current().nextInt(20, 50); // Pausa de 20 a 50 ms
+                if (ThreadLocalRandom.current().nextInt(10) < 2) {
+                    nextClickTime += ThreadLocalRandom.current().nextInt(20, 50);
                 }
 
                 nextClickTime = System.currentTimeMillis() + getRandomDelay();

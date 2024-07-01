@@ -36,7 +36,17 @@ public class AutoRegister extends Module {
 
     @SubscribeEvent
     public void onPreMotion(PreMotionEvent event) {
+        if(characters.getInput() == 6.0){
+            String paswor = "pwpwpw";
+        }
 
+        if(characters.getInput() == 8.0){
+            String paswor = "pwpwpwpw";
+        }
+        if(characters.getInput() == 10.0){
+            String paswor = "pwpwpwpwpw";
+        }
+        
         sendChatMessage("/register " + paswor + " " + paswor);
         this.disable();
 
