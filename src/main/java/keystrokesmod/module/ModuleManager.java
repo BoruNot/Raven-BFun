@@ -60,10 +60,12 @@ public class ModuleManager {
     public static Scaffold scaffold;
     public static Module noMissClick;
     public static Tweaks tweaks;
+    public static AutoRegister autoRegister;
 
     public void register() {
         this.addModule(autoClicker = new LeftClicker());
         this.addModule(new LongJump());
+        this.addModule(new AutoRegister());
         this.addModule(new FastUse());
         this.addModule(new Backtrack());
         this.addModule(new PlayerCircle());

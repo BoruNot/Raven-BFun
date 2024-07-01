@@ -1,23 +1,16 @@
 package keystrokesmod.module.impl.ghost;
 
-import keystrokesmod.utility.pasted.*;
 import keystrokesmod.module.Module;
 import keystrokesmod.module.setting.impl.ButtonSetting;
 import keystrokesmod.module.setting.impl.SliderSetting;
-import keystrokesmod.utility.Reflection;
 import keystrokesmod.utility.Utils;
 import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiInventory;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -28,7 +21,8 @@ public class LeftClicker extends Module {
     public ButtonSetting weaponOnly;
     public ButtonSetting disableOnInventory;
     private Random rand = new Random();
-    private TimerUtils timer = new TimerUtils();
+    private long nextClickTime;
+    private long lastClickTime;
     private boolean allow;
 
     public LeftClicker() {
@@ -38,10 +32,19 @@ public class LeftClicker extends Module {
         this.registerSetting(jitter = new SliderSetting("Jitter", 0.0, 0.0, 3.0, 0.1));
         this.registerSetting(weaponOnly = new ButtonSetting("Weapon only", false));
         this.registerSetting(disableOnInventory = new ButtonSetting("Disable On Inventory", true));
+        this.nextClickTime = System.currentTimeMillis() + getRandomDelay();
     }
 
     public void guiUpdate() {
         Utils.correctValue(minCPS, maxCPS);
+    }
+
+    private long getRandomDelay() {
+        long min = (long) (1000 / minCPS.getInput());
+        long max = (long) (1000 / maxCPS.getInput());
+        long delay = max > min ? ThreadLocalRandom.current().nextLong(min, max) : min;
+        delay += ThreadLocalRandom.current().nextLong(-min / 3, min / 3); // Pequenas variações aleatórias
+        return delay;
     }
 
     @SubscribeEvent
@@ -55,18 +58,14 @@ public class LeftClicker extends Module {
         if (weaponOnly.isToggled() && !Utils.holdingWeapon())
             return;
 
-
-        long min = (long) (1000 / minCPS.getInput());
-        long max = (long) (1000 / maxCPS.getInput());
-
-        long delay = max > min ? ThreadLocalRandom.current().nextLong(max, min) : min;
-
-        if (timer.hasTimeElapsed(delay, true))
+        if (System.currentTimeMillis() > nextClickTime) {
+            nextClickTime = System.currentTimeMillis() + getRandomDelay();
             allow = true;
+        }
     }
 
     @SubscribeEvent
-    public void onTick(TickEvent e) throws IllegalAccessException {
+    public void onTick(TickEvent.ClientTickEvent e) {
         if (mc.thePlayer == null)
             return;
 
@@ -75,52 +74,39 @@ public class LeftClicker extends Module {
 
         if (Mouse.isButtonDown(0)) {
             if (jitter.getInput() > 0.0D) {
-                double a = jitter.getInput() * 0.45D;
-                EntityPlayerSP var10000;
-                if (this.rand.nextBoolean()) {
-                    var10000 = mc.thePlayer;
-                    var10000.rotationYaw = (float) ((double) var10000.rotationYaw + (double) this.rand.nextFloat() * a);
-                } else {
-                    var10000 = mc.thePlayer;
-                    var10000.rotationYaw = (float) ((double) var10000.rotationYaw - (double) this.rand.nextFloat() * a);
-                }
-
-                if (this.rand.nextBoolean()) {
-                    var10000 = mc.thePlayer;
-                    var10000.rotationPitch = (float) ((double) var10000.rotationPitch + (double) this.rand.nextFloat() * a * 0.45D);
-                } else {
-                    var10000 = mc.thePlayer;
-                    var10000.rotationPitch = (float) ((double) var10000.rotationPitch - (double) this.rand.nextFloat() * a * 0.45D);
-                }
+                double jitterAmount = jitter.getInput() * 0.45D;
+                applyJitter(jitterAmount);
             }
-			
-			if (allow) {
-				Reflection.leftClickCounter.set(mc, 0);
-				Reflection.clickMouse();
 
-				allow = false;
-			}
+            if (allow && System.currentTimeMillis() > lastClickTime) {
+                KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(), true);
+                KeyBinding.onTick(mc.gameSettings.keyBindAttack.getKeyCode());
+                lastClickTime = System.currentTimeMillis();
+
+                if (ThreadLocalRandom.current().nextInt(10) < 2) { // 20% de chance de uma micro pausa
+                    nextClickTime += ThreadLocalRandom.current().nextInt(20, 50); // Pausa de 20 a 50 ms
+                }
+
+                nextClickTime = System.currentTimeMillis() + getRandomDelay();
+                allow = false;
+
+                KeyBinding.setKeyBindState(mc.gameSettings.keyBindAttack.getKeyCode(), false);
+            }
         }
     }
 
-    class Timer {
-        private long lastTime;
-
-        public Timer() {
-            this.lastTime = System.currentTimeMillis();
+    private void applyJitter(double jitterAmount) {
+        EntityPlayerSP player = mc.thePlayer;
+        if (rand.nextBoolean()) {
+            player.rotationYaw += rand.nextFloat() * jitterAmount;
+        } else {
+            player.rotationYaw -= rand.nextFloat() * jitterAmount;
         }
 
-        public boolean hasTimePassed(long ms) {
-            if (System.currentTimeMillis() >= ms) {
-                this.lastTime = System.currentTimeMillis();
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        public boolean getFinish(long ms) {
-            return System.currentTimeMillis() - lastTime >= ms;
+        if (rand.nextBoolean()) {
+            player.rotationPitch += rand.nextFloat() * jitterAmount * 0.45D;
+        } else {
+            player.rotationPitch -= rand.nextFloat() * jitterAmount * 0.45D;
         }
     }
 }
