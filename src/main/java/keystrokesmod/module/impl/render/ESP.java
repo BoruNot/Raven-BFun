@@ -2,7 +2,6 @@ package keystrokesmod.module.impl.render;
 
 import keystrokesmod.Raven;
 import keystrokesmod.module.Module;
-import keystrokesmod.module.ModuleManager;
 import keystrokesmod.module.impl.other.AntiBot;
 import keystrokesmod.module.setting.impl.ButtonSetting;
 import keystrokesmod.module.setting.impl.DescriptionSetting;
@@ -17,7 +16,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.awt.*;
 
-public class PlayerESP extends Module {
+public class ESP extends Module {
     public SliderSetting red;
     public SliderSetting green;
     public SliderSetting blue;
@@ -35,7 +34,7 @@ public class PlayerESP extends Module {
     private int rgb_c = 0;
     // none, outline, box, shaded, 2d, ring
 
-    public PlayerESP() {
+    public ESP() {
         super("PlayerESP", category.render, 0);
         this.registerSetting(red = new SliderSetting("Red", 0.0D, 0.0D, 255.0D, 1.0D));
         this.registerSetting(green = new SliderSetting("Green", 255.0D, 0.0D, 255.0D, 1.0D));

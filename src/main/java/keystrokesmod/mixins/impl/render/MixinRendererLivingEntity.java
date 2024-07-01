@@ -37,7 +37,7 @@ public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> exte
     protected void renderModel(T p_renderModel_1_, float p_renderModel_2_, float p_renderModel_3_, float p_renderModel_4_, float p_renderModel_5_, float p_renderModel_6_, float p_renderModel_7_) {
         boolean flag = !p_renderModel_1_.isInvisible();
         boolean flag1 = !flag && !p_renderModel_1_.isInvisibleToPlayer(Minecraft.getMinecraft().thePlayer);
-        boolean drawOutline = ModuleManager.playerESP != null && ModuleManager.playerESP.isEnabled() && ModuleManager.playerESP.outline.isToggled();
+        boolean drawOutline = ModuleManager.ESP != null && ModuleManager.ESP.isEnabled() && ModuleManager.ESP.outline.isToggled();
         if (flag || flag1) {
             if (!this.bindEntityTexture(p_renderModel_1_)) {
                 return;
@@ -53,19 +53,19 @@ public abstract class MixinRendererLivingEntity<T extends EntityLivingBase> exte
             }
 
             if (drawOutline && p_renderModel_1_ instanceof EntityPlayer) {
-                if (((p_renderModel_1_ != Minecraft.getMinecraft().thePlayer && !AntiBot.isBot(p_renderModel_1_)) || (ModuleManager.playerESP.renderSelf.isToggled() && p_renderModel_1_ == Minecraft.getMinecraft().thePlayer))) {
+                if (((p_renderModel_1_ != Minecraft.getMinecraft().thePlayer && !AntiBot.isBot(p_renderModel_1_)) || (ModuleManager.ESP.renderSelf.isToggled() && p_renderModel_1_ == Minecraft.getMinecraft().thePlayer))) {
                     GlStateManager.pushMatrix();
                     int color;
-                    if (ModuleManager.playerESP.teamColor.isToggled()) {
-                        color = ModuleManager.playerESP.getColorFromTags(p_renderModel_1_.getDisplayName().getFormattedText());
+                    if (ModuleManager.ESP.teamColor.isToggled()) {
+                        color = ModuleManager.ESP.getColorFromTags(p_renderModel_1_.getDisplayName().getFormattedText());
                     }
-                    else if (ModuleManager.playerESP.rainbow.isToggled()) {
+                    else if (ModuleManager.ESP.rainbow.isToggled()) {
                         color =  Utils.getChroma(2L, 0L);
                     }
                     else {
-                        color = (new Color((int) ModuleManager.playerESP.red.getInput(), (int) ModuleManager.playerESP.green.getInput(), (int) ModuleManager.playerESP.blue.getInput())).getRGB();
+                        color = (new Color((int) ModuleManager.ESP.red.getInput(), (int) ModuleManager.ESP.green.getInput(), (int) ModuleManager.ESP.blue.getInput())).getRGB();
                     }
-                    if (ModuleManager.playerESP.redOnDamage.isToggled() && p_renderModel_1_.hurtTime != 0) {
+                    if (ModuleManager.ESP.redOnDamage.isToggled() && p_renderModel_1_.hurtTime != 0) {
                         color = Color.RED.getRGB();
                     }
                     glColor(color);

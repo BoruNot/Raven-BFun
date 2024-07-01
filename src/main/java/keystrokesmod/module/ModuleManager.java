@@ -46,7 +46,7 @@ public class ModuleManager {
     public static TargetHUD targetHUD;
     public static Trajectories trajectories;
     public static NoFall noFall;
-    public static PlayerESP playerESP;
+    public static ESP ESP;
     public static Speed speed;
     public static Module reduce;
     public static SafeWalk safeWalk;
@@ -117,7 +117,7 @@ public class ModuleManager {
         this.addModule(new Nametags());
 		this.addModule(new Step());
 		this.addModule(new Spider());
-        this.addModule(playerESP = new PlayerESP());
+        this.addModule(ESP = new ESP());
         this.addModule(new Tracers());
         this.addModule(hud = new HUD());
         this.addModule(new Anticheat());
